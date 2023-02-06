@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define MAX_NODES 100
+
+struct node {
+  int data;
+  struct node *next;
+};
+
+struct queue {
+  int front, rear;
+  int items[MAX_NODES];
+};
+
+struct node *graph[MAX_NODES];
+bool visited[MAX_NODES];
+
+void enqueue(struct queue *q, int value) {
+  q->items[++q->rear] = value;
+}
+
+int dequeue(struct queue *q) {
+  return q->items[q->front++];
+}
+
+bool is_empty(struct queue *q) {
+  return q->front > q->rear;
+}
+
+void add_edge(int source, int dest) {
+  struct node *new_node = (struct node *)malloc(sizeof(struct node));
+  new_node->data = dest;
+  new_node->next = graph[source];
+  graph[source] = new_node;
+}
+
+void bfs(int start) {
+  struct queue q = {0, -1};
+  int i, current;
+  struct node *adj_node;
+
+  enqueue(&q, start);
+  visited[start] = true;
+
+  while (!is_empty(&q)) {
+    current = dequeue(&q);
+    printf("%d ", current);
+    adj_node = graph[current];
+    while (adj_node != NULL) {
+      i = adj_node->data;
+      if (!visited[i]) {
+        enqueue(&q, i);
+        visited[i] = true;
+      }
+      adj_node = adj_node->next;
+    }
+  }
+}
+
+int main() {
+  int i, n, e, u, v;
+
+  printf("Enter the number of nodes and edges: ");
+  scanf("%d%d", &n, &e);
+
+  for (i = 0; i < e; i++) {
+    printf("Enter edge (u, v): ");
+    scanf("%d%d", &u, &v);
+    add_edge(u, v);
+  }
+
+  printf("Enter the starting node: ");
+  scanf("%d", &u);
+
+  printf("BFS Traversal: ");
+  bfs(u);
+
+  return 0;
+}
