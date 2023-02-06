@@ -1,0 +1,33 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 100
+
+int hash(int key) {
+  return key % MAX;
+}
+
+int probe(int h) {
+  return ++h % MAX;
+}
+
+int main() {
+  int arr[MAX] = {0};
+  int key, h, p;
+
+  printf("Enter key value to insert: ");
+  scanf("%d", &key);
+
+  h = hash(key);
+  if (arr[h] == 0) {
+    arr[h] = key;
+  } else {
+    p = probe(h);
+    while (arr[p] != 0) {
+      p = probe(p);
+    }
+    arr[p] = key;
+  }
+
+  printf("Key %d is stored in index %d\n", key, p);
+  return 0;
+}
